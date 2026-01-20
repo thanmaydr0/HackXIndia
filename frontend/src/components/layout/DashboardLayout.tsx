@@ -2,6 +2,8 @@ import { Outlet } from 'react-router-dom'
 import { AppSidebar } from './AppSidebar'
 import LearningLog from '@/features/memory/LearningLog'
 import BrainDump from '@/features/memory/BrainDump'
+import KernelPanicProtocol from '@/features/safety/KernelPanicProtocol'
+import UptimeMonitor from '@/features/safety/UptimeMonitor'
 
 export default function DashboardLayout() {
     return (
@@ -14,6 +16,8 @@ export default function DashboardLayout() {
                     <Outlet />
                     <LearningLog />
                     <BrainDump />
+                    <KernelPanicProtocol />
+                    <UptimeMonitor />
                 </div>
             </main>
         </div>

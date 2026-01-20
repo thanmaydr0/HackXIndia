@@ -6,10 +6,13 @@ import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import TasksPage from './pages/TasksPage'
 
+import { Toaster } from 'sonner'
+
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Toaster richColors position="top-center" />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
