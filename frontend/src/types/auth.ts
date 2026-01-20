@@ -10,6 +10,8 @@ export interface AuthState {
 export interface AuthContextType extends AuthState {
     signInWithOTP: (phone: string) => Promise<{ error: Error | null }>
     verifyOTP: (phone: string, token: string) => Promise<{ error: Error | null; session: Session | null }>
+    signInWithPassword: (email: string, password: string) => Promise<{ error: Error | null }>
+    signUpWithPassword: (email: string, password: string) => Promise<{ error: Error | null }>
     signOut: () => Promise<{ error: Error | null }>
     clearError: () => void
 }

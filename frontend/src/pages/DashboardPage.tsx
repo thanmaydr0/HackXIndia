@@ -1,4 +1,5 @@
 import SystemMonitor from '@/features/dashboard/SystemMonitor'
+import KnowledgeGraph from '@/features/memory/KnowledgeGraph'
 import { useAuth } from '@/features/auth/AuthContext'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -57,6 +58,11 @@ export default function DashboardPage() {
                             <p className="text-xs text-muted-foreground">Session active for 45 mins.</p>
                         </CardContent>
                     </Card>
+                </div>
+
+                {/* Knowledge Graph - Spans full width */}
+                <div className="hidden md:block md:col-span-2 lg:col-span-3 h-[500px]">
+                    <KnowledgeGraph />
                 </div>
 
                 {/* Mission Status */}

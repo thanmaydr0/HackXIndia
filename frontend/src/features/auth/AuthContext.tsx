@@ -14,9 +14,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     useEffect(() => {
+        let mounted = true
+
+        // Safety timeout - if auth hangs for more than 3s, force load to finish
+        const safetyTimeout = setTimeout(() => {
+            if (mounted) {
+                console.warn("Auth check timed out - forcing app load")
+                setState(prev => {
+                    if (prev.loading) return { ...prev, loading: false }
+                    return prev
+                })
+            }
+        }, 3000)
+
         // Check active session
         supabase.auth.getSession().then(({ data: { session }, error }) => {
+            if (!mounted) return
             if (error) {
+                console.error("Auth session error:", error)
                 setState((prev) => ({ ...prev, loading: false, error }))
             } else {
                 setState((prev) => ({
@@ -26,12 +41,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     loading: false,
                 }))
             }
+        }).catch((err) => {
+            if (!mounted) return
+            console.error("Unexpected auth error:", err)
+            setState((prev) => ({ ...prev, loading: false, error: err }))
+        }).finally(() => {
+            clearTimeout(safetyTimeout)
         })
 
         // Listen for changes
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (!mounted) return
             setState((prev) => ({
                 ...prev,
                 session,
@@ -40,7 +62,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }))
         })
 
-        return () => subscription.unsubscribe()
+        return () => {
+            mounted = false
+            subscription.unsubscribe()
+            clearTimeout(safetyTimeout)
+        }
     }, [])
 
     const signInWithOTP = async (phone: string) => {
@@ -83,6 +109,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
+    const signInWithPassword = async (email: string, password: string) => {
+        try {
+            setState(prev => ({ ...prev, loading: true, error: null }))
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            })
+            if (error) throw error
+            return { error: null }
+        } catch (error: any) {
+            const wrappedError = new Error(error.message || 'Failed to sign in')
+            setState(prev => ({ ...prev, error: wrappedError }))
+            return { error: wrappedError }
+        } finally {
+            setState(prev => ({ ...prev, loading: false }))
+        }
+    }
+
+    const signUpWithPassword = async (email: string, password: string) => {
+        try {
+            setState(prev => ({ ...prev, loading: true, error: null }))
+            const { error } = await supabase.auth.signUp({
+                email,
+                password,
+            })
+            if (error) throw error
+            return { error: null }
+        } catch (error: any) {
+            const wrappedError = new Error(error.message || 'Failed to sign up')
+            setState(prev => ({ ...prev, error: wrappedError }))
+            return { error: wrappedError }
+        } finally {
+            setState(prev => ({ ...prev, loading: false }))
+        }
+    }
+
     const signOut = async () => {
         try {
             setState(prev => ({ ...prev, loading: true, error: null }))
@@ -106,6 +168,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 ...state,
                 signInWithOTP,
                 verifyOTP,
+                signInWithPassword,
+                signUpWithPassword,
                 signOut,
                 clearError,
             }}
