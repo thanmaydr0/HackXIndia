@@ -58,10 +58,13 @@ export function useBreakScheduler() {
 
     const logBreak = async (type: BreakType, status: 'taken' | 'snoozed' | 'skipped') => {
         try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+
             await supabase.from('break_logs').insert({
-                user_id: (await supabase.auth.getUser()).data.user?.id,
+                user_id: user.id,
                 break_type: type,
-                status: status
+                completed: status === 'taken'
             })
 
             // Gamification: Energy Boost

@@ -24,6 +24,7 @@ interface MockInterviewResult {
     scores?: any[]
     overall_score?: number
     feedback?: string
+    tips?: string[]
     areas_to_improve?: string[]
     needs_adaptation?: boolean
     audio_base64?: string

@@ -71,7 +71,7 @@ export function useARIACommands() {
 
     const listTasks = useCallback(async (status?: string): Promise<CommandResult> => {
         let query = supabase.from('tasks').select('*').is('deleted_at', null)
-        if (status) query = query.eq('status', status)
+        if (status) query = query.eq('status', status as any)
 
         const { data, error } = await query.order('created_at', { ascending: false }).limit(10)
         if (error) return { success: false, message: error.message }

@@ -27,13 +27,13 @@ export function useBurnoutDetection() {
 
                 if (stats) {
                     // Trigger: High Cognitive Load
-                    if (stats.cognitive_load > 90) {
+                    if ((stats.cognitive_load || 0) > 90) {
                         score += 25
                         triggers.push('System Overload (Logic Cores at 90%)')
                     }
 
                     // Trigger: Low Energy
-                    if (stats.energy_level < 20) {
+                    if ((stats.energy_level || 0) < 20) {
                         score += 25
                         triggers.push('Critical Power Failure (<20%)')
                     }
@@ -93,12 +93,15 @@ export function useBurnoutDetection() {
     const resolvePanic = async () => {
         // Reset system stats or log event
         try {
-            await supabase.from('panic_events').insert({
-                user_id: (await supabase.auth.getUser()).data.user?.id,
-                trigger_score: state.score,
-                trigger_details: state.triggers,
-                resolved_at: new Date().toISOString()
-            })
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                await supabase.from('panic_events').insert({
+                    user_id: user.id,
+                    type: 'burnout_panic',
+                    severity: state.score,
+                    resolved: true
+                })
+            }
 
             // Simulation: Reset load/energy
             // await supabase.rpc('reset_system_stats') 

@@ -33,7 +33,11 @@ const callPlacementAgent = async (action: string, data: any, profileId?: string)
 
 type ViewMode = 'setup' | 'dashboard' | 'interview' | 'flashcards' | 'company'
 
-export default function PlacementAgent() {
+interface PlacementAgentProps {
+    onClose?: () => void
+}
+
+export default function PlacementAgent({ onClose }: PlacementAgentProps) {
     const { user } = useAuth()
     const [viewMode, setViewMode] = useState<ViewMode>('setup')
     const [isLoading, setIsLoading] = useState(false)

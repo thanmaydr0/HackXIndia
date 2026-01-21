@@ -232,7 +232,7 @@ export default function KnowledgeGraph() {
             .data(nodes)
             .join("g")
             .style("cursor", "pointer")
-            .call(d3.drag<SVGGElement, Node>()
+            .call(d3.drag<any, any>()
                 .on("start", (event, d) => {
                     if (!event.active) simulation.alphaTarget(0.3).restart()
                     d.fx = d.x

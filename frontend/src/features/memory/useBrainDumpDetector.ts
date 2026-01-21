@@ -24,8 +24,8 @@ export function useBrainDumpDetector() {
                 }
 
                 if (data) {
-                    setCognitiveLoad(data.cognitive_load)
-                    if (data.cognitive_load > 85) {
+                    setCognitiveLoad(data.cognitive_load || 0)
+                    if ((data.cognitive_load || 0) > 85) {
                         setNeedsMaintenance(true)
                     }
                 }
