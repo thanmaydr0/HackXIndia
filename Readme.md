@@ -4,7 +4,7 @@
 
 ![SkillOS Banner](https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000&auto=format&fit=crop)
 
-### 🚀 **[Live Demo: skillos-hackx.onrender.com](https://skillos-hackx.onrender.com)**  
+### 🚀 **[Live Demo: skillos-hackx.onrender.com](https://skillos-4xuc.onrender.com)**  
 *(Note: Please update this link with your actual deployed URL)*
 
 Video Link:
